@@ -3,16 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>g/Place</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Text-to-Speech Generator</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Welcome to g/Place</h1>
-  <div class="controls">
-    <input type="color" id="colorPicker" value="#000000">
-    <p>Select a color and click on the canvas to place a pixel.</p>
+  <div class="container">
+    <h1>Text-to-Speech Generator</h1>
+    <textarea id="text-input" placeholder="Type your text here..."></textarea>
+    <button id="speak-btn">Speak</button>
+    <label for="voice-select">Choose a voice:</label>
+    <select id="voice-select"></select>
+    <label for="rate">Rate:</label>
+    <input type="range" id="rate" min="0.5" max="2" value="1" step="0.1">
+    <span id="rate-value">1</span>
   </div>
-  <canvas id="placeCanvas" width="1000" height="1000"></canvas>
 
   <script src="script.js"></script>
 </body>
