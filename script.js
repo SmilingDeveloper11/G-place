@@ -1,27 +1,59 @@
-const canvas = document.getElementById('placeCanvas');
-const ctx = canvas.getContext('2d');
-const pixelSize = 10;
-const colorPicker = document.getElementById('colorPicker');
-let currentColor = colorPicker.value;
+// Get DOM elements
+const textInput = document.getElementById('text-input');
+const speakButton = document.getElementById('speak-btn');
+const voiceSelect = document.getElementById('voice-select');
+const rateInput = document.getElementById('rate');
+const rateValue = document.getElementById('rate-value');
 
-// Cambia el color cuando el usuario selecciona uno nuevo
-colorPicker.addEventListener('input', function () {
-  currentColor = this.value;
-});
+// Initialize speech synthesis
+const synth = window.speechSynthesis;
+let voices = [];
 
-// Dibuja el lienzo en blanco con píxeles iniciales
-for (let y = 0; y < canvas.height; y += pixelSize) {
-  for (let x = 0; x < canvas.width; x += pixelSize) {
-    ctx.fillStyle = '#FFFFFF'; // Fondo blanco por defecto
-    ctx.fillRect(x, y, pixelSize, pixelSize);
-    ctx.strokeRect(x, y, pixelSize, pixelSize);
+// Populate voice list
+function populateVoiceList() {
+  voices = synth.getVoices();
+  voiceSelect.innerHTML = '';
+
+  voices.forEach((voice, index) => {
+    const option = document.createElement('option');
+    option.textContent = `${voice.name} (${voice.lang})`;
+    option.value = index;
+    voiceSelect.appendChild(option);
+  });
+}
+
+// Speak the text
+function speak() {
+  if (synth.speaking) {
+    console.error('Speech is already in progress.');
+    return;
+  }
+
+  const text = textInput.value;
+  if (text !== '') {
+    const utterance = new SpeechSynthesisUtterance(text);
+
+    // Set the selected voice
+    const selectedVoice = voices[voiceSelect.value];
+    if (selectedVoice) {
+      utterance.voice = selectedVoice;
+    }
+
+    // Set the rate
+    utterance.rate = rateInput.value;
+
+    synth.speak(utterance);
   }
 }
 
-// Añade la lógica para colocar píxeles
-canvas.addEventListener('click', function (event) {
-  const x = Math.floor(event.offsetX / pixelSize) * pixelSize;
-  const y = Math.floor(event.offsetY / pixelSize) * pixelSize;
-  ctx.fillStyle = currentColor; // Usa el color actual seleccionado
-  ctx.fillRect(x, y, pixelSize, pixelSize);
+// Update rate value label
+rateInput.addEventListener('input', () => {
+  rateValue.textContent = rateInput.value;
 });
+
+// Event listeners
+speakButton.addEventListener('click', speak);
+speechSynthesis.addEventListener('voiceschanged', populateVoiceList);
+
+// Populate voice list on page load
+populateVoiceList();
